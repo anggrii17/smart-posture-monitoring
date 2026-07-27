@@ -10,7 +10,8 @@ $sql = "INSERT INTO posture_logs
 
 VALUES
 
-('$pitch','$status',NOW())";
+('$pitch','$status',DATE_ADD(NOW(), INTERVAL 7 HOUR))";
+
 
 if($conn->query($sql)){
     echo json_encode([

@@ -2,27 +2,60 @@
 
 include "config.php";
 
-$id = $_POST['id'];
 
-$sql = "DELETE FROM posture_logs WHERE id='$id'";
+if(isset($_POST['id'])){
 
 
-if($conn->query($sql)){
+    $id = $_POST['id'];
 
-    echo json_encode([
-        "success"=>true,
-        "message"=>"Data berhasil dihapus"
-    ]);
+
+    $sql = "DELETE FROM posture_logs WHERE id='$id'";
+
+
+    if($conn->query($sql)){
+
+
+        echo json_encode([
+
+            "success"=>true,
+
+            "message"=>"Data berhasil dihapus"
+
+        ]);
+
+
+    }else{
+
+
+        echo json_encode([
+
+            "success"=>false,
+
+            "message"=>$conn->error
+
+        ]);
+
+
+    }
+
+
 
 }else{
 
+
     echo json_encode([
+
         "success"=>false,
-        "message"=>$conn->error
+
+        "message"=>"ID tidak ditemukan"
+
     ]);
 
 }
 
+
+
 $conn->close();
+
 
 ?>

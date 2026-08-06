@@ -1,6 +1,7 @@
 <?php
 
 include "config.php";
+require_once "send_notification.php";
 
 $pitch  = $_POST['pitch'] ?? null;
 $status = $_POST['status'] ?? null;
@@ -16,14 +17,16 @@ if ($pitch === null || $status === null) {
 }
 
 // Cek apakah sudah ada data
-$cek = $conn->query("SELECT id FROM current_posture LIMIT 1");
+$cek = $conn->query("SELECT id, status FROM current_posture LIMIT 1");
+
+$statusLama = "";
 
 if ($cek->num_rows > 0) {
 
-    // Jika sudah ada -> UPDATE
     $row = $cek->fetch_assoc();
 
     $id = $row['id'];
+    $statusLama = $row['status'];
 
     $sql = "UPDATE current_posture
             SET
@@ -35,7 +38,6 @@ if ($cek->num_rows > 0) {
 
 } else {
 
-    // Jika tabel kosong -> INSERT
     $sql = "INSERT INTO current_posture
             (pitch,status,timestamp,last_update)
             VALUES
@@ -44,6 +46,16 @@ if ($cek->num_rows > 0) {
 }
 
 if ($conn->query($sql)) {
+
+    // Kirim notifikasi hanya saat berubah menjadi Tidak Ergonomis
+    if ($status == "Tidak Ergonomis" && $statusLama != "Tidak Ergonomis") {
+
+        sendNotification(
+            "Smart Posture",
+            "Postur tubuh Anda tidak ergonomis. Segera perbaiki posisi duduk."
+        );
+
+    }
 
     echo json_encode([
         "success" => true,

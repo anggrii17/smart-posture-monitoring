@@ -3,6 +3,6 @@
     "description": "Smart Posture Monitoring API",
     "type": "project",
     "require": {
-        "google/apiclient": "^2.17"
+        "google/apiclient": "*"
     }
 }
